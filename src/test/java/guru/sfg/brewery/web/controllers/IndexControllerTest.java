@@ -7,7 +7,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @WebMvcTest
-class IndexControllerTest extends baseIT{
+class IndexControllerTest extends BaseIT {
 
     @Test
     void testGetIndex() throws Exception {

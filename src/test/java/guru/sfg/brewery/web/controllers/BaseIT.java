@@ -14,27 +14,27 @@ import org.springframework.web.context.WebApplicationContext;
 
 import static org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers.springSecurity;
 
-public class baseIT {
+public class BaseIT {
 
     @Autowired
-    WebApplicationContext wac;
+    public WebApplicationContext wac;
 
-    MockMvc mockMvc;
-
-    @MockBean
-    BeerRepository beerRepository;
+    public MockMvc mockMvc;
 
     @MockBean
-    BeerInventoryRepository beerInventoryRepository;
+    public BeerRepository beerRepository;
 
     @MockBean
-    BreweryService breweryService;
+    public BeerInventoryRepository beerInventoryRepository;
 
     @MockBean
-    CustomerRepository customerRepository;
+    public BreweryService breweryService;
 
     @MockBean
-    BeerService beerService;
+    public CustomerRepository customerRepository;
+
+    @MockBean
+    public BeerService beerService;
 
     @BeforeEach
     public void setup() {
