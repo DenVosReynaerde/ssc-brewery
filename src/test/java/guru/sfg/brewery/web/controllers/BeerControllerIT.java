@@ -11,6 +11,24 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @WebMvcTest
 public class BeerControllerIT extends BaseIT {
 
+
+    /**
+     * test user admin, the password for this user is created using bCrypt encoder
+     * @throws Exception
+     */
+    @Test
+    void initCreationFormAdmin() throws Exception {
+        mockMvc.perform(get("/beers/new")
+                .with(httpBasic("foxtrot", "secret")))
+                .andExpect(status().isOk())
+                .andExpect(view().name("beers/createBeer"))
+                .andExpect(model().attributeExists("beer"));
+    }
+
+    /**
+     * test user user, the password for this user is created using SHA256 encoder
+     * @throws Exception
+     */
     @Test
     void initCreationForm() throws Exception {
         mockMvc.perform(get("/beers/new")
@@ -20,6 +38,10 @@ public class BeerControllerIT extends BaseIT {
                 .andExpect(model().attributeExists("beer"));
     }
 
+    /**
+     * test the user scott, the password is created using LDAP encoder.
+     * @throws Exception
+     */
     @Test
     void initCreationFormUserScott() throws Exception {
         mockMvc.perform(get("/beers/new")
