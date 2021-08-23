@@ -14,9 +14,9 @@ import java.util.Map;
 public class FoxtrotPasswordEncoderFactories {
 
     public static PasswordEncoder createDelegatingPasswordEncoder() {
-        String encodingId = "bcrypt15";
+        String encodingId = "bcrypt11";
         Map<String, PasswordEncoder> encoders = new HashMap<>();
-        encoders.put(encodingId, new BCryptPasswordEncoder(15));
+        encoders.put(encodingId, new BCryptPasswordEncoder(11));
         encoders.put("bcrypt", new BCryptPasswordEncoder());
         encoders.put("ldap", new org.springframework.security.crypto.password.LdapShaPasswordEncoder());
         encoders.put("noop", org.springframework.security.crypto.password.NoOpPasswordEncoder.getInstance());

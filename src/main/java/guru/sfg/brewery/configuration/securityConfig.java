@@ -1,9 +1,7 @@
 package guru.sfg.brewery.configuration;
 
-import guru.sfg.brewery.security.FoxtrotPasswordEncoderFactories;
-import guru.sfg.brewery.security.AbstractRestAuthFilter;
-import guru.sfg.brewery.security.RestHeaderAuthFilter;
-import guru.sfg.brewery.security.RestUrlAuthFilter;
+import guru.sfg.brewery.security.*;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
@@ -20,16 +18,16 @@ import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 @EnableWebSecurity
 public class securityConfig extends WebSecurityConfigurerAdapter {
 
-    public AbstractRestAuthFilter restHeaderAuthFilter(AuthenticationManager authenticationManager) {
-        AbstractRestAuthFilter filter = new RestHeaderAuthFilter(new AntPathRequestMatcher("/api/**"));
+    public RestHeaderAuthFilter restHeaderAuthFilter(AuthenticationManager authenticationManager) {
+        RestHeaderAuthFilter filter = new RestHeaderAuthFilter(new AntPathRequestMatcher("/api/**"));
         filter.setAuthenticationManager(authenticationManager);
 
         return filter;
     }
 
 
-    public AbstractRestAuthFilter restUrlAuthFilter(AuthenticationManager authenticationManager) {
-        AbstractRestAuthFilter filter = new RestUrlAuthFilter(new AntPathRequestMatcher("/api/**"));
+    public RestUrlAuthFilter restUrlAuthFilter(AuthenticationManager authenticationManager) {
+        RestUrlAuthFilter filter = new RestUrlAuthFilter(new AntPathRequestMatcher("/api/**"));
         filter.setAuthenticationManager(authenticationManager);
 
         return filter;
@@ -56,16 +54,20 @@ public class securityConfig extends WebSecurityConfigurerAdapter {
 
         http.authorizeRequests(authorize -> {
             authorize
+                    .antMatchers("/h2-console/**").permitAll() //enable H2-console, do not use in production
                     .antMatchers("/webjars/**", "/login", "/resources/**").permitAll()
                     .antMatchers("/", "/beers/find", "/beers*").permitAll()
                     .antMatchers(HttpMethod.GET, "/api/v1/beer/**").permitAll()
                     .mvcMatchers(HttpMethod.GET, "/api/v1/beerUpc/{upc}").permitAll();
         })
-        .authorizeRequests(
-                (requests) -> requests.anyRequest()
-                        .authenticated());
-        http.formLogin();
-        http.httpBasic();
+        .authorizeRequests()
+        .anyRequest().authenticated()
+        .and()
+        .formLogin()
+        .and()
+        .httpBasic();
+
+        http.headers().frameOptions().sameOrigin(); //enable frames, makes the H2 console work correctly.
     }
 
 /*    @Override
@@ -86,13 +88,15 @@ public class securityConfig extends WebSecurityConfigurerAdapter {
         return new InMemoryUserDetailsManager(admin, user);
     }*/
 
+
     /**
      * each user has a password encoded with a different encoder. the encoder is identified by the key between the first {}
      * @param auth
      * @throws Exception
      */
-    @Override
+ /*   @Override
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
+
         auth.inMemoryAuthentication()
                 .withUser("foxtrot")
                 .password("{bcrypt}$2a$10$le25QH9GJts418aHRH8OFeZWelrAEFd50.s8dsPleDrKQzNG93kcq") //secret
@@ -105,5 +109,11 @@ public class securityConfig extends WebSecurityConfigurerAdapter {
                 .withUser("scott")
                 .password("{bcrypt15}$2a$15$IUBozzcPKZopen5.xGZwxO71.VjarS4BK1tH6lroPfB4/2PIYLz7C") //tiger
                 .roles("CUSTOMER");
+
+
     }
+
+  */
+
+
 }

@@ -54,23 +54,26 @@ public abstract class AbstractRestAuthFilter extends AbstractAuthenticationProce
     @Override
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)
             throws IOException, ServletException {
-        doFilter((HttpServletRequest) request, (HttpServletResponse) response, chain);
-    }
 
-    private void doFilter(HttpServletRequest request, HttpServletResponse response, FilterChain chain)
-            throws IOException, ServletException {
+        HttpServletRequest HttpRequest = (HttpServletRequest) request;
+        HttpServletResponse HttpResponse = (HttpServletResponse) response;
+
+
+        if (logger.isDebugEnabled()) {
+            logger.debug("Request is to process authentication");
+        }
 
         try {
-            Authentication authenticationResult = attemptAuthentication(request, response);
-            if(authenticationResult != null) {
-                successfulAuthentication(request, response, chain, authenticationResult);
-            } else {
-                chain.doFilter(request, response);
-            }
+            Authentication authResult = attemptAuthentication(HttpRequest, HttpResponse);
 
-            successfulAuthentication(request, response, chain, authenticationResult);
-        } catch(AuthenticationException e) {
-            unsuccessfulAuthentication(request, response, e);
+            if (authResult != null) {
+                successfulAuthentication(HttpRequest, HttpResponse, chain, authResult);
+            } else {
+                chain.doFilter(HttpRequest, HttpResponse);
+            }
+        } catch (AuthenticationException e) {
+            log.error("Authentication Failed", e);
+            unsuccessfulAuthentication(HttpRequest, HttpResponse, e);
         }
 
     }
