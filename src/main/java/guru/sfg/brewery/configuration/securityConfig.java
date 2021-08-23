@@ -1,6 +1,7 @@
 package guru.sfg.brewery.configuration;
 
 import guru.sfg.brewery.security.FoxtrotPasswordEncoderFactories;
+import guru.sfg.brewery.security.RestHeaderAuthFilter;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;

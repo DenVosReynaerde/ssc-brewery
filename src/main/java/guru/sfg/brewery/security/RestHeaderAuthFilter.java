@@ -1,4 +1,4 @@
-package guru.sfg.brewery.configuration;
+package guru.sfg.brewery.security;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.log.LogMessage;
