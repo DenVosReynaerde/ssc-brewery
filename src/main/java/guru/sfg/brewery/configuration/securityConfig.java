@@ -39,7 +39,7 @@ public class securityConfig extends WebSecurityConfigurerAdapter {
 
         http.addFilterBefore(restHeaderAuthFilter(authenticationManager()),
                 UsernamePasswordAuthenticationFilter.class)
-                .csrf().disable();
+        .csrf().disable();
         http.authorizeRequests(authorize -> {
             authorize
                     .antMatchers("/webjars/**", "/login", "/resources/**").permitAll()
