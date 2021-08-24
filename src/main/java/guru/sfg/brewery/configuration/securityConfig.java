@@ -18,21 +18,6 @@ import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 @EnableWebSecurity
 public class securityConfig extends WebSecurityConfigurerAdapter {
 
-    public RestHeaderAuthFilter restHeaderAuthFilter(AuthenticationManager authenticationManager) {
-        RestHeaderAuthFilter filter = new RestHeaderAuthFilter(new AntPathRequestMatcher("/api/**"));
-        filter.setAuthenticationManager(authenticationManager);
-
-        return filter;
-    }
-
-
-    public RestUrlAuthFilter restUrlAuthFilter(AuthenticationManager authenticationManager) {
-        RestUrlAuthFilter filter = new RestUrlAuthFilter(new AntPathRequestMatcher("/api/**"));
-        filter.setAuthenticationManager(authenticationManager);
-
-        return filter;
-    }
-
     /**
      * Password encoder factories is used to support different encoding types. this for lagacy purposes.
      * @return
@@ -45,12 +30,7 @@ public class securityConfig extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(HttpSecurity http) throws Exception {
 
-        http.addFilterBefore(restHeaderAuthFilter(authenticationManager()),
-                UsernamePasswordAuthenticationFilter.class)
-        .csrf().disable();
-
-        http.addFilterBefore(restUrlAuthFilter(authenticationManager()),
-                UsernamePasswordAuthenticationFilter.class);
+        http.csrf().disable();
 
         http.authorizeRequests(authorize -> {
             authorize
@@ -58,6 +38,9 @@ public class securityConfig extends WebSecurityConfigurerAdapter {
                     .antMatchers("/webjars/**", "/login", "/resources/**").permitAll()
                     .antMatchers("/", "/beers/find", "/beers*").permitAll()
                     .antMatchers(HttpMethod.GET, "/api/v1/beer/**").permitAll()
+                    .mvcMatchers(HttpMethod.GET, "/brewery/api/v1/breweries").hasAnyRole("ADMIN", "CUSTOMER")
+                    .mvcMatchers(HttpMethod.DELETE, "/api/v1/beer/**").hasRole("ADMIN")
+                    .mvcMatchers("/brewery/breweries").hasAnyRole("ADMIN", "CUSTOMER")
                     .mvcMatchers(HttpMethod.GET, "/api/v1/beerUpc/{upc}").permitAll();
         })
         .authorizeRequests()

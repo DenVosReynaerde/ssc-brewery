@@ -35,13 +35,13 @@ public class SecurityDataLoader implements CommandLineRunner {
     private void loadSecurityData() {
 
         log.debug("Loading admin role");
-        Authority adminAuth = authorityRepository.save(Authority.builder().role("ADMIN").build());
+        Authority adminAuth = authorityRepository.save(Authority.builder().role("ROLE_ADMIN").build());
 
         log.debug("Loading user role");
-        Authority userAuth = authorityRepository.save(Authority.builder().role("USER").build());
+        Authority userAuth = authorityRepository.save(Authority.builder().role("ROLE_USER").build());
 
         log.debug("Loading customer role");
-        Authority customerAuth = authorityRepository.save(Authority.builder().role("CUSTOMER").build());
+        Authority customerAuth = authorityRepository.save(Authority.builder().role("ROLE_CUSTOMER").build());
 
         log.debug("Loading foxtrot user");
         userRepository.save(User.builder().username("foxtrot").password(passwordEncoder.encode("secret")).authority(adminAuth).build());

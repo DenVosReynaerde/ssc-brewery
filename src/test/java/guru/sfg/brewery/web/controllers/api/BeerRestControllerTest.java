@@ -13,38 +13,25 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @SpringBootTest
 class BeerRestControllerTest extends BaseIT {
 
-    @Test
-    void testDeleteBeerBadCredentials() throws Exception {
-        mockMvc.perform(delete("/api/v1/beer/97df0c39-90c4-4ae0-b663-453e8e19c311")
-                .header("Api-Key", "user").header("Api-Secret","fout"))
-                .andExpect(status().isUnauthorized());
-    }
 
     @Test
-    void testDeleteBeerURLBadCredentials() throws Exception {
-        mockMvc.perform(delete("/api/v1/beer/97df0c39-90c4-4ae0-b663-453e8e19c311")
-                .param("Api-Key", "user").param("Api-Secret","fout"))
-                .andExpect(status().isUnauthorized());
-    }
-
-    @Test
-    void testDeleteBeerURL() throws Exception {
-        mockMvc.perform(delete("/api/v1/beer/97df0c39-90c4-4ae0-b663-453e8e19c311")
-                .param("Api-Key", "user").param("Api-Secret","password"))
-                .andExpect(status().isOk());
-    }
-
-    @Test
-    void testDeleteBeer() throws Exception {
-        mockMvc.perform(delete("/api/v1/beer/97df0c39-90c4-4ae0-b663-453e8e19c311")
-                .header("Api-Key", "user").header("Api-Secret","password"))
-                .andExpect(status().isOk());
-    }
-
-    @Test
-    void deleteBeerHttpBasic() throws Exception {
+    void deleteBeerHttpBasicUserRoleFail() throws Exception {
         mockMvc.perform(delete("/api/v1/beer/97df0c39-90c4-4ae0-b663-453e8e19c311")
                 .with(httpBasic("user", "password")))
+                .andExpect(status().isForbidden());
+    }
+
+    @Test
+    void deleteBeerHttpBasicCustomerRoleFail() throws Exception {
+        mockMvc.perform(delete("/api/v1/beer/97df0c39-90c4-4ae0-b663-453e8e19c311")
+                .with(httpBasic("scott", "tiger")))
+                .andExpect(status().isForbidden());
+    }
+
+    @Test
+    void deleteBeerHttpBasicSuccess() throws Exception {
+        mockMvc.perform(delete("/api/v1/beer/97df0c39-90c4-4ae0-b663-453e8e19c311")
+                .with(httpBasic("foxtrot", "secret")))
                 .andExpect(status().isNoContent());
     }
 
@@ -55,7 +42,28 @@ class BeerRestControllerTest extends BaseIT {
     }
 
     @Test
-    void listBeers() throws Exception {
+    void listBeersCustomerRole() throws Exception {
+        mockMvc.perform(get("/api/v1/beer/")
+                .with(httpBasic("scott", "tiger")))
+                .andExpect(status().isOk());
+    }
+
+    @Test
+    void listBeersUserRole() throws Exception {
+        mockMvc.perform(get("/api/v1/beer/")
+                .with(httpBasic("user", "password")))
+                .andExpect(status().isOk());
+    }
+
+    @Test
+    void listBeersAdminRole() throws Exception {
+        mockMvc.perform(get("/api/v1/beer/")
+                .with(httpBasic("foxtrot", "secret")))
+                .andExpect(status().isOk());
+    }
+
+    @Test
+    void listBeersNoAuth() throws Exception {
         mockMvc.perform(get("/api/v1/beer/"))
                 .andExpect(status().isOk());
     }
