@@ -24,21 +24,6 @@ public class BaseIT {
 
     public MockMvc mockMvc;
 
-/*    @MockBean
-    public BeerRepository beerRepository;
-
-    @MockBean
-    public BeerInventoryRepository beerInventoryRepository;
-
-    @MockBean
-    public BreweryService breweryService;
-
-    @MockBean
-    public CustomerRepository customerRepository;
-
-    @MockBean
-    public BeerService beerService;*/
-
     @BeforeEach
     public void setup() {
         mockMvc = MockMvcBuilders
@@ -51,6 +36,11 @@ public class BaseIT {
         return Stream.of(Arguments.of("foxtrot","secret"),
                 Arguments.of("scott", "tiger"),
                 Arguments.of("user", "password"));
+    }
+
+    public static Stream<Arguments> getStreamAdminCustomer() {
+        return Stream.of(Arguments.of("foxtrot","secret"),
+                Arguments.of("scott", "tiger"));
     }
 
     public static Stream<Arguments> getStreamNotAdmin() {
